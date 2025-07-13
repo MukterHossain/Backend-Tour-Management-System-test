@@ -2,7 +2,6 @@ import { model, Schema } from "mongoose";
 import { IAuthProvider, IsActive, IUser, Role } from "./user.interface";
 
 
-
 const authPorviderSchema = new Schema<IAuthProvider>({
     provider: {type : String, required: true},
     providerId: {type : String, required: true}
@@ -10,30 +9,31 @@ const authPorviderSchema = new Schema<IAuthProvider>({
    versionKey:false,
     _id: false
 })
+
 const userSchema = new Schema<IUser>({
-    name : {type: String, required: true},
-    email: {type: String, required: true, unique:true},
-    password: {type: String},
+    name: {type: String, required: true},
+    email: {type :String, required: true, unique:true},
+    password: {type :String},
     role: {
         type: String,
         enum: Object.values(Role),
         default: Role.USER
     },
     phone: {type: String},
-    picture: {type:String},
+    picture: {type: String},
     address: {type: String},
     isDeleted: {type: Boolean, default:false},
     isActive: {
-        type:String,
+        type: String,
         enum: Object.values(IsActive),
-        default: IsActive.ACTIVE
+        default: IsActive.ACTIVE,
     },
-    isVerified: {type: String, default:true},
-    auth:[authPorviderSchema]
-
+    isVarified: {type: Boolean, default:false},
+    auths: [authPorviderSchema],
 },{
     timestamps:true,
-    versionKey:false
+    versionKey: false
 })
 
-export const User = model<IUser>("User", userSchema)
+
+export const User = model<IUser>("User",userSchema)

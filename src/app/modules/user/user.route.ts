@@ -1,11 +1,26 @@
 import { Router } from "express";
-import { userControllers } from "./user.controller";
+import { UserControllers } from "./user.controller";
+// import { AnyZodObject } from "zod";
+import { createUserZodSchema, updateUserZodSchema } from "./user.validation";
+import { Role } from "./user.interface";
+import { validateRequest } from "../../middleware/validateRequest";
+import { checkAuth } from "../../middleware/checkAuth";
+// import AppError from "../../errorHelpers/AppError";
+// import { JwtPayload } from "jsonwebtoken"
+// import { Role } from "./user.interface";
+// import { verifyToken } from "../../utils/jwt";
+// import { envVars } from "../../config/env";
 
 
 const router = Router()
 
-router.post("/register", userControllers.createUser)
-router.get("/all-users", userControllers.getAllUsers)
 
 
-export const UserRouters = router
+
+router.post("/register",  validateRequest(createUserZodSchema),  UserControllers.createUser)
+router.get("/all-users",checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserControllers.getAllUsers)
+router.patch("/:id", validateRequest(updateUserZodSchema), checkAuth(...Object.values(Role)), UserControllers.updateUser)
+
+
+
+export const UserRoutes = router
